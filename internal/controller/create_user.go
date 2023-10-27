@@ -8,7 +8,7 @@ import (
 	"github.com/rssistemasitu/crud-go/internal/configs/validation"
 	"github.com/rssistemasitu/crud-go/internal/controller/model/request"
 	"github.com/rssistemasitu/crud-go/internal/model"
-	"github.com/rssistemasitu/crud-go/internal/model/service"
+	"github.com/rssistemasitu/crud-go/internal/view"
 	"go.uber.org/zap"
 )
 
@@ -16,7 +16,7 @@ var (
 	UserDomainInterface model.UserDomainInterface
 )
 
-func CreateUser(c *gin.Context) {
+func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 	logger.Info("Init CreateUser controller",
 		zap.String("application", "user-application"),
 		zap.String("event", "user-create-controller"))
@@ -36,12 +36,10 @@ func CreateUser(c *gin.Context) {
 		userRequest.Age,
 	)
 
-	service := service.NewUserDomainService()
-
-	if err := service.CreateUser(domain); err != nil {
+	if err := uc.service.CreateUser(domain); err != nil {
 		c.JSON(err.Code, err)
 		return
 	}
 
-	c.String(http.StatusCreated, "User created successfully")
+	c.JSON(http.StatusCreated, view.ConvertDomainToResponse(domain))
 }

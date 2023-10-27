@@ -33,11 +33,12 @@ func init() {
 	log, _ = logConfig.Build()
 }
 
-func validateEnvVariable() {
+func getEnvVariable(logName string) string {
 	err := godotenv.Load("configs/.env")
 	if err != nil {
 		log.Fatal("Error loading .env file to get LOGS")
 	}
+	return os.Getenv(logName)
 }
 
 func Info(message string, tags ...zap.Field) {
@@ -52,8 +53,8 @@ func Error(message string, err error, tags ...zap.Field) {
 }
 
 func getOutputLogs() string {
-	validateEnvVariable()
-	output := strings.ToLower(strings.TrimSpace(os.Getenv(LOG_OUTPUT)))
+	envVariable := getEnvVariable(LOG_OUTPUT)
+	output := strings.ToLower(strings.TrimSpace(envVariable))
 	if output == "" {
 		return "stdout"
 	}
@@ -61,8 +62,8 @@ func getOutputLogs() string {
 }
 
 func getLevelLogs() zapcore.Level {
-	validateEnvVariable()
-	switch strings.ToLower(strings.TrimSpace(os.Getenv(LOG_LEVEL))) {
+	envVariable := getEnvVariable(LOG_LEVEL)
+	switch strings.ToLower(strings.TrimSpace(envVariable)) {
 	case "info":
 		return zapcore.InfoLevel
 	case "error":
