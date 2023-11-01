@@ -16,11 +16,13 @@ var (
 	UserDomainInterface model.UserDomainInterface
 )
 
-func (uc *userControllerInterface) CreateUser(c *gin.Context) {
+func (uc *userControllerInterface) CreateUserController(c *gin.Context) {
 	logger.Info("Init CreateUser controller",
 		zap.String("application", "user-application"),
-		zap.String("event", "user-create-controller"))
+		zap.String("flow", "user-create-controller"))
+
 	var userRequest request.UserRequest
+
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
 		logger.Error("Error trying to validate user", err)
 		restErr := validation.ValidateUserError(err)
@@ -36,10 +38,12 @@ func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 		userRequest.Age,
 	)
 
-	if err := uc.service.CreateUser(domain); err != nil {
+	domainResult, err := uc.service.CreateUserService(domain)
+
+	if err != nil {
 		c.JSON(err.Code, err)
 		return
 	}
 
-	c.JSON(http.StatusCreated, view.ConvertDomainToResponse(domain))
+	c.JSON(http.StatusCreated, view.ConvertDomainToResponse(domainResult))
 }

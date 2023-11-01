@@ -1,10 +1,9 @@
 package logger
 
 import (
-	"os"
 	"strings"
 
-	"github.com/joho/godotenv"
+	"github.com/rssistemasitu/crud-go/internal/utils"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -33,14 +32,6 @@ func init() {
 	log, _ = logConfig.Build()
 }
 
-func getEnvVariable(logName string) string {
-	err := godotenv.Load("configs/.env")
-	if err != nil {
-		log.Fatal("Error loading .env file to get LOGS")
-	}
-	return os.Getenv(logName)
-}
-
 func Info(message string, tags ...zap.Field) {
 	log.Info(message, tags...)
 	log.Sync()
@@ -53,7 +44,7 @@ func Error(message string, err error, tags ...zap.Field) {
 }
 
 func getOutputLogs() string {
-	envVariable := getEnvVariable(LOG_OUTPUT)
+	envVariable := utils.GetEnvVariable(LOG_OUTPUT)
 	output := strings.ToLower(strings.TrimSpace(envVariable))
 	if output == "" {
 		return "stdout"
@@ -62,7 +53,7 @@ func getOutputLogs() string {
 }
 
 func getLevelLogs() zapcore.Level {
-	envVariable := getEnvVariable(LOG_LEVEL)
+	envVariable := utils.GetEnvVariable(LOG_LEVEL)
 	switch strings.ToLower(strings.TrimSpace(envVariable)) {
 	case "info":
 		return zapcore.InfoLevel

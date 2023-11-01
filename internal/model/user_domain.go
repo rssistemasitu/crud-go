@@ -1,66 +1,48 @@
 package model
 
 import (
-	"fmt"
+	"encoding/json"
 
-	"golang.org/x/crypto/bcrypt"
+	"github.com/rssistemasitu/crud-go/internal/configs/logger"
 )
-
-// Objeto que contém as regras de negócio
-var (
-	SECRET = "secret"
-)
-
-type UserDomainInterface interface {
-	GetEmail() string
-	GetPassword() string
-	GetName() string
-	GetAge() int
-	EncryptPassword()
-}
-
-func NewUserDomain(
-	email, password, name string,
-	age int) UserDomainInterface {
-	return &userDomain{
-		email, password, name, age,
-	}
-}
 
 type userDomain struct {
-	Email    string
-	Password string
-	Name     string
-	Age      int
+	id       string
+	email    string
+	password string
+	name     string
+	age      int
+}
+
+func (ud *userDomain) GetId() string {
+	return ud.id
 }
 
 func (ud *userDomain) GetEmail() string {
-	return ud.Email
+	return ud.email
 }
 
 func (ud *userDomain) GetPassword() string {
-	return ud.Password
+	return ud.password
 }
 
 func (ud *userDomain) GetName() string {
-	return ud.Name
+	return ud.name
 }
 
 func (ud *userDomain) GetAge() int {
-	return ud.Age
+	return ud.age
 }
 
-func (ud *userDomain) EncryptPassword() {
-	HashPassword(ud.Password)
+func (ud *userDomain) SetId(id string) {
+	ud.id = id
 }
 
-func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	fmt.Println("Hash:    ", string(bytes))
-	return string(bytes), err
-}
-
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+func (ud *userDomain) GetJsonValue() (string, error) {
+	b, err := json.Marshal(ud)
+	if err != nil {
+		logger.Error("Error to parse domain", err)
+		return "", err
+	}
+	return string(b), nil
 }

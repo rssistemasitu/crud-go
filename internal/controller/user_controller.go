@@ -13,12 +13,12 @@ func NewUserControllerInterface(
 }
 
 type UserControllerInterface interface {
-	FindUserById(c *gin.Context)
-	FindUserByEmail(c *gin.Context)
-
-	CreateUser(c *gin.Context)
-	UpdateUser(c *gin.Context)
-	DeleteUser(c *gin.Context)
+	FindUserByIdController(c *gin.Context)
+	FindUserByEmailController(c *gin.Context)
+	CreateUserController(c *gin.Context)
+	UpdateUserController(c *gin.Context)
+	DeleteUserController(c *gin.Context)
+	LoginUserController(c *gin.Context)
 }
 
 type userControllerInterface struct {

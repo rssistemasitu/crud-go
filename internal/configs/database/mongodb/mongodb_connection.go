@@ -2,10 +2,9 @@ package mongodb
 
 import (
 	"context"
-	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/rssistemasitu/crud-go/internal/configs/logger"
+	"github.com/rssistemasitu/crud-go/internal/utils"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -16,8 +15,8 @@ var (
 )
 
 func NewMongoDBConnection(ctx context.Context) (*mongo.Database, error) {
-	mongodb_name := getEnvVariable(MONGODB_NAME)
-	mongodb_uri := getEnvVariable(MONGODB_URL)
+	mongodb_name := utils.GetEnvVariable(MONGODB_NAME)
+	mongodb_uri := utils.GetEnvVariable(MONGODB_URL)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongodb_uri))
 
 	if err != nil {
@@ -31,12 +30,4 @@ func NewMongoDBConnection(ctx context.Context) (*mongo.Database, error) {
 	logger.Info("Init connection with Mongo database")
 	return client.Database(mongodb_name), nil
 
-}
-
-func getEnvVariable(logName string) string {
-	err := godotenv.Load("configs/.env")
-	if err != nil {
-		logger.Error("Error loading .env file", err)
-	}
-	return os.Getenv(logName)
 }
