@@ -1,5 +1,7 @@
 package model
 
+import "github.com/rssistemasitu/crud-go/internal/rest_err"
+
 type UserDomainInterface interface {
 	GetId() string
 	GetEmail() string
@@ -10,6 +12,7 @@ type UserDomainInterface interface {
 	GetJsonValue() (string, error)
 	EncryptPassword()
 	CheckPasswordHash(string) bool
+	GenerateToken() (string, *rest_err.RestErr)
 }
 
 func NewUserDomain(

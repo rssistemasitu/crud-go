@@ -9,7 +9,7 @@ import (
 
 func (ud *userDomainService) LoginUserService(
 	userDomain model.UserDomainInterface,
-) (model.UserDomainInterface, *rest_err.RestErr) {
+) (model.UserDomainInterface, string, *rest_err.RestErr) {
 	logger.Info("Init LoginUser service",
 		zap.String("application", "user-application"),
 		zap.String("flow", "user-login-service"))
@@ -17,11 +17,16 @@ func (ud *userDomainService) LoginUserService(
 	user, err := ud.FindUserByEmailService(userDomain.GetEmail())
 
 	if err != nil {
-		return nil, rest_err.NewForbiddenError("Unauthorized")
+		return nil, "", rest_err.NewForbiddenError("Unauthorized")
 	}
 
 	if !user.CheckPasswordHash(userDomain.GetPassword()) {
-		return nil, rest_err.NewForbiddenError("Unauthorized")
+		return nil, "", rest_err.NewForbiddenError("Unauthorized")
+	}
+
+	token, err := user.GenerateToken()
+	if err != nil {
+		return nil, "", err
 	}
 
 	logger.Info("LoginUser service executed successfully",
@@ -29,5 +34,5 @@ func (ud *userDomainService) LoginUserService(
 		zap.String("flow", "user-login-service"),
 		zap.String("userId", user.GetId()))
 
-	return user, nil
+	return user, token, nil
 }
