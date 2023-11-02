@@ -42,16 +42,6 @@ func (uc *userControllerInterface) FindUserByIdController(c *gin.Context) {
 		return
 	}
 
-	auth := c.Request.Header.Get("Authorization")
-
-	user, err := model.VerifyToken(auth)
-	if err != nil {
-		c.JSON(err.Code, err)
-		return
-	}
-
-	logger.Info(fmt.Sprintf("User authenticated: %#v", user))
-
 	logger.Info("FindUserById controller executed successfully",
 		zap.String("application", "user-application"),
 		zap.String("flow", "find-user-by-id"))

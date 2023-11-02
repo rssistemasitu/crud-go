@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/rssistemasitu/crud-go/internal/configs/logger"
 	"github.com/rssistemasitu/crud-go/internal/rest_err"
@@ -78,4 +79,42 @@ func VerifyToken(tokenString string) (UserDomainInterface, *rest_err.RestErr) {
 		name:  claims["name"].(string),
 		age:   int(claims["age"].(float64)),
 	}, nil
+}
+
+func MiddlewareVerifyToken(c *gin.Context) {
+	secret := utils.GetEnvVariable(JWT_SECRET_KEY)
+	tokenValue := removeBearerPrefix(c.Request.Header.Get("Authorization"))
+
+	parsedToken, err := jwt.Parse(tokenValue, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); ok {
+			return []byte(secret), nil
+		}
+		return nil, rest_err.NewBadRequestError("Invalid token")
+
+	})
+
+	errRest := rest_err.NewUnauthorizedError("Invalid token")
+
+	if err != nil {
+		c.JSON(errRest.Code, errRest)
+		c.Abort()
+		return
+	}
+
+	_, ok := parsedToken.Claims.(jwt.MapClaims)
+
+	expirationTime := int64(parsedToken.Claims.(jwt.MapClaims)["exp"].(float64))
+	if time.Now().Unix() > expirationTime {
+		errRest = rest_err.NewUnauthorizedError("Expired token")
+		c.JSON(errRest.Code, errRest)
+		c.Abort()
+		return
+	}
+
+	if !ok || !parsedToken.Valid {
+		c.JSON(errRest.Code, errRest)
+		c.Abort()
+		return
+	}
+
 }
