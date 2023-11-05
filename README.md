@@ -2,6 +2,10 @@
 Crud em GOLang com acesso a banco de dados MongoDB
 
 ### Libs 
+
+#### RestAPI
+github.com/gin-gonic/gin
+
 #### Logs
 go.uber.org/zap
 
@@ -13,3 +17,7 @@ go.mongodb.org/mongo-driver/mongo
 
 #### Token JWT
 github.com/golang-jwt/jwt/v4
+
+#### Tests
+github.com/stretchr/testify
+

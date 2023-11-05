@@ -90,7 +90,6 @@ func MiddlewareVerifyToken(c *gin.Context) {
 			return []byte(secret), nil
 		}
 		return nil, rest_err.NewBadRequestError("Invalid token")
-
 	})
 
 	errRest := rest_err.NewUnauthorizedError("Invalid token")
@@ -102,14 +101,6 @@ func MiddlewareVerifyToken(c *gin.Context) {
 	}
 
 	_, ok := parsedToken.Claims.(jwt.MapClaims)
-
-	expirationTime := int64(parsedToken.Claims.(jwt.MapClaims)["exp"].(float64))
-	if time.Now().Unix() > expirationTime {
-		errRest = rest_err.NewUnauthorizedError("Expired token")
-		c.JSON(errRest.Code, errRest)
-		c.Abort()
-		return
-	}
 
 	if !ok || !parsedToken.Valid {
 		c.JSON(errRest.Code, errRest)

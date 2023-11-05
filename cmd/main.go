@@ -16,7 +16,6 @@ import (
 // Atualizando configurações sem reiniciar a aplicação: go get https://github.com/fsnotify/fsnotify
 
 func main() {
-	// inicia as dependencias
 	database, err := mongodb.NewMongoDBConnection(context.Background())
 	if err != nil {
 		logger.Error("Error trying to connect to database", err)
