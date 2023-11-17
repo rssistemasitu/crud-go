@@ -25,7 +25,7 @@ func (uc *userControllerInterface) DeleteUserController(c *gin.Context) {
 	err := uc.service.DeleteUserService(userId)
 
 	if err != nil {
-		logger.Error("Error trying to call deleteeUser service",
+		logger.Error("Error trying to call deleteUser service",
 			err,
 			zap.String("application", "user-application"),
 			zap.String("flow", "user-delete-controller"))

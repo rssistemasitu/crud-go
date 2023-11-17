@@ -7,9 +7,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Objeto que contém as regras de negócio
 const (
-	SECRET = "secret"
+	SECRET = "la9UjaeevuVtxFxWFbFGFXck3RZnbuy2"
 )
 
 func (ud *userDomain) EncryptPassword() {

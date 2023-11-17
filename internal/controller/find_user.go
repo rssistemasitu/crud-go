@@ -1,20 +1,16 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"net/mail"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rssistemasitu/crud-go/internal/configs/logger"
-	"github.com/rssistemasitu/crud-go/internal/model"
 	"github.com/rssistemasitu/crud-go/internal/rest_err"
 	"github.com/rssistemasitu/crud-go/internal/view"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/zap"
 )
-
-// Usando UUID - go get github.com/google/uuid
 
 func (uc *userControllerInterface) FindUserByIdController(c *gin.Context) {
 	logger.Info("Init findUserById controller",
@@ -73,14 +69,6 @@ func (uc *userControllerInterface) FindUserByEmailController(c *gin.Context) {
 		c.JSON(err.Code, err)
 		return
 	}
-
-	user, err := model.VerifyToken(c.Request.Header.Get("Authorization"))
-	if err != nil {
-		c.JSON(err.Code, err)
-		return
-	}
-
-	logger.Info(fmt.Sprintf("User authenticated: %#v", user))
 
 	logger.Info("FindUserByEmail controller executed successfully",
 		zap.String("application", "user-application"),

@@ -48,38 +48,38 @@ func removeBearerPrefix(token string) string {
 	return token
 }
 
-func VerifyToken(tokenString string) (UserDomainInterface, *rest_err.RestErr) {
-	secret := utils.GetEnvVariable(JWT_SECRET_KEY)
+// func VerifyToken(tokenString string) (UserDomainInterface, *rest_err.RestErr) {
+// 	secret := utils.GetEnvVariable(JWT_SECRET_KEY)
 
-	parsedToken, err := jwt.Parse(removeBearerPrefix(tokenString), func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, rest_err.NewBadRequestError("Invalid token")
-		}
-		return []byte(secret), nil
-	})
+// 	parsedToken, err := jwt.Parse(removeBearerPrefix(tokenString), func(token *jwt.Token) (interface{}, error) {
+// 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+// 			return nil, rest_err.NewBadRequestError("Invalid token")
+// 		}
+// 		return []byte(secret), nil
+// 	})
 
-	if err != nil {
-		return nil, rest_err.NewUnauthorizedError("Invalid token")
-	}
+// 	if err != nil {
+// 		return nil, rest_err.NewUnauthorizedError("Invalid token")
+// 	}
 
-	claims, ok := parsedToken.Claims.(jwt.MapClaims)
+// 	claims, ok := parsedToken.Claims.(jwt.MapClaims)
 
-	expirationTime := int64(parsedToken.Claims.(jwt.MapClaims)["exp"].(float64))
-	if time.Now().Unix() > expirationTime {
-		return nil, rest_err.NewUnauthorizedError("Expired token")
-	}
+// 	expirationTime := int64(parsedToken.Claims.(jwt.MapClaims)["exp"].(float64))
+// 	if time.Now().Unix() > expirationTime {
+// 		return nil, rest_err.NewUnauthorizedError("Expired token")
+// 	}
 
-	if !ok || !parsedToken.Valid {
-		return nil, rest_err.NewUnauthorizedError("Invalid token")
-	}
+// 	if !ok || !parsedToken.Valid {
+// 		return nil, rest_err.NewUnauthorizedError("Invalid token")
+// 	}
 
-	return &userDomain{
-		id:    claims["id"].(string),
-		email: claims["email"].(string),
-		name:  claims["name"].(string),
-		age:   int(claims["age"].(float64)),
-	}, nil
-}
+// 	return &userDomain{
+// 		id:    claims["id"].(string),
+// 		email: claims["email"].(string),
+// 		name:  claims["name"].(string),
+// 		age:   int(claims["age"].(float64)),
+// 	}, nil
+// }
 
 func MiddlewareVerifyToken(c *gin.Context) {
 	secret := utils.GetEnvVariable(JWT_SECRET_KEY)

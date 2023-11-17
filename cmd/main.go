@@ -13,8 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// Atualizando configurações sem reiniciar a aplicação: go get https://github.com/fsnotify/fsnotify
-
 func main() {
 	database, err := mongodb.NewMongoDBConnection(context.Background())
 	if err != nil {
